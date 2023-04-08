@@ -1,12 +1,17 @@
 #include "Physics.h"
 #include "../World/UpdateData.h"
 
+namespace {
+	std::vector<NSF::RigidBody*> __neighbours;
+}
+
 void NSF::Physics::CheckCollision() {
 	const float responseCoefficient = 0.75f;
 
 	for (RigidBody* body : rigidBodies) {
-		auto& neighBours = fixedGrid.GetBodiesNearBody(*body);
-		for (RigidBody* neighbour : neighBours) {
+		/*__neighbours.clear();
+		fixedGrid.GetBodiesNearBody(*body, __neighbours);
+		for (RigidBody* neighbour : __neighbours) {
 			auto distanceVec = body->GetTransform().GetPosition() - neighbour->GetTransform().GetPosition();
 			auto distance = distanceVec.x * distanceVec.x + distanceVec.y * distanceVec.y;
 			auto minimumDistance = body->GetTransform().GetHalfScale().x + neighbour->GetTransform().GetHalfScale().x;
@@ -21,7 +26,23 @@ void NSF::Physics::CheckCollision() {
 				body->GetTransform().Move(-overlap * currentMassRatio * dt);
 				neighbour->GetTransform().Move(overlap * neighbourMassRatio * dt);
 			}
-		}
+		}*/
+		fixedGrid.ForBodiesNearBody(*body, [body, responseCoefficient](RigidBody* neighbour) {
+			auto distanceVec = body->GetTransform().GetPosition() - neighbour->GetTransform().GetPosition();
+			auto distance = distanceVec.x * distanceVec.x + distanceVec.y * distanceVec.y;
+			auto minimumDistance = body->GetTransform().GetHalfScale().x + neighbour->GetTransform().GetHalfScale().x;
+
+			if (distance < minimumDistance * minimumDistance) {
+				auto distanceSqrt = sqrtf(distance);
+				auto overlap = distanceVec / distanceSqrt;
+				auto currentMassRatio = body->GetMass() / (body->GetMass() + neighbour->GetMass());
+				auto neighbourMassRatio = 1 - currentMassRatio;
+				auto dt = 0.5f * responseCoefficient * (distanceSqrt - minimumDistance);
+
+				body->GetTransform().Move(-overlap * currentMassRatio * dt);
+				neighbour->GetTransform().Move(overlap * neighbourMassRatio * dt);
+			}
+		});
 	}
 }
 

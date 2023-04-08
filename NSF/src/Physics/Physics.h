@@ -25,9 +25,10 @@ namespace NSF {
 			fixedGrid.AddBody(rigidBody);
 		}
 		inline void UnregisterRigidBody(RigidBody& rigidBody) {
-			rigidBodies.erase(std::remove_if(rigidBodies.begin(), rigidBodies.end(), [rigidBody](RigidBody* otherBody) {
-				return rigidBody.GetID() == otherBody->GetID();
-			}), rigidBodies.end());
+			//rigidBodies.erase(std::remove_if(rigidBodies.begin(), rigidBodies.end(), [rigidBody](RigidBody* otherBody) {
+			//	return rigidBody.GetID() == otherBody->GetID();
+			//}), rigidBodies.end());
+			rigidBodies.erase(std::find(rigidBodies.begin(), rigidBodies.end(), &rigidBody));
 
 			fixedGrid.RemoveBody(rigidBody);
 		}

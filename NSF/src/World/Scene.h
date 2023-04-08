@@ -41,8 +41,8 @@ namespace NSF {
 		template <IsComponent T>
 		T* GetComponent(const int parent) const {
 			for (size_t i = 0; i < components.size(); i++) {
-				if (components[i]->GetParent() == parent && dynamic_cast<T>(components[i].get()) != nullptr) {
-					return dynamic_cast<T>(components[i].get());
+				if (components[i]->GetParent() == parent && dynamic_cast<T*>(components[i].get()) != nullptr) {
+					return dynamic_cast<T*>(components[i].get());
 				}
 			}
 

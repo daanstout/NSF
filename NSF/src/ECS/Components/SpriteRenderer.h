@@ -16,7 +16,8 @@ namespace NSF {
 		SpriteRenderer() : texture(nullptr) {}
 
 		void Load(SDL_Renderer* renderer) {
-			texture = std::make_shared<Texture>(renderer, "C:\\Users\\Daan\\Pictures\\ball.png");
+			//texture = std::make_shared<Texture>(renderer, "C:\\Users\\Daan\\Pictures\\ball.png");
+			texture = std::make_shared<Texture>(renderer, "C:\\Users\\Beheerder\\Pictures\\ball.png");
 		}
 
 		void Render(SDL_Renderer* renderer) {

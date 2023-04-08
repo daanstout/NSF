@@ -30,7 +30,7 @@ namespace NSF {
 			}*/
 		}
 
-		std::vector<RigidBody*>& GetBodiesNearBody(RigidBody& body) {
+		void GetBodiesNearBody(RigidBody& body, std::vector<RigidBody*>& result) {
 			glm::vec2 currentCell = body.GetCellPosition();
 
 			float startX = currentCell.x > 0 ? currentCell.x - 1 : currentCell.x;
@@ -39,19 +39,44 @@ namespace NSF {
 			float startY = currentCell.y > 0 ? currentCell.y - 1 : currentCell.y;
 			float endY = currentCell.y < height - 1 ? currentCell.y + 1 : currentCell.y;
 
-			std::vector<RigidBody*>* result = new std::vector<RigidBody*>();
+			//std::vector<RigidBody*>* result = new std::vector<RigidBody*>();
 
 			for (int x = (int)startX; x <= endX; x++) {
 				for (int y = (int)startY; y <= endY; y++) {
 					for (RigidBody* otherBody : cells[x][y]) {
 						if (otherBody->GetID() != body.GetID()) {
-							result->push_back(otherBody);
+							result.push_back(otherBody);
 						}
 					}
 				}
 			}
 
-			return *result;
+			//return *result;
+		}
+
+		template<typename Func>
+		void ForBodiesNearBody(RigidBody& body, Func func) {
+			glm::vec2 currentCell = body.GetCellPosition();
+
+			float startX = currentCell.x > 0 ? currentCell.x - 1 : currentCell.x;
+			float endX = currentCell.x < width - 1 ? currentCell.x + 1 : currentCell.x;
+
+			float startY = currentCell.y > 0 ? currentCell.y - 1 : currentCell.y;
+			float endY = currentCell.y < height - 1 ? currentCell.y + 1 : currentCell.y;
+
+			//std::vector<RigidBody*>* result = new std::vector<RigidBody*>();
+
+			for (int x = (int)startX; x <= endX; x++) {
+				for (int y = (int)startY; y <= endY; y++) {
+					for (RigidBody* otherBody : cells[x][y]) {
+						if (otherBody->GetID() != body.GetID()) {
+							func(otherBody);
+						}
+					}
+				}
+			}
+
+			//return *result;
 		}
 
 		void UpdateBodyCell(RigidBody& body) {
